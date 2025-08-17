@@ -9,54 +9,31 @@ try {
                   args[0]('denied');
                } catch (e) {}
 
-
-
-// --- Begin: resilient fetch wrapper (adds CORS fallback) ---
-(function() {
+// ===== Proxy helper to bypass CORS on static hosting =====
+function prox(u) {
   try {
-    const _origFetch = window.fetch.bind(window);
-    const proxyBuilders = [
-      // If you deploy your own proxy, set window.CORS_PROXY_BASE = "https://<your-proxy>/";
-      // The wrapper will prefer it.
-      ...(window.CORS_PROXY_BASE ? [(u) => (window.CORS_PROXY_BASE + u)] : []),
-
-      (u) => "https://cors.isomorphic-git.org/" + u,
-      (u) => "https://thingproxy.freeboard.io/fetch/" + u,
-      (u) => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u)
-    ];
-    window.fetch = async function(input, init) {
-      const baseInit = { mode: "cors", referrerPolicy: "no-referrer", cache: "no-store" };
-      try {
-        const res = await _origFetch(input, Object.assign({}, baseInit, init || {}));
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        return res;
-      } catch (err) {
-        try {
-          const url = typeof input === "string" ? input : (input && input.url);
-          if (!url) throw err;
-          const dest = new URL(url, location.href);
-          if (dest.origin === location.origin) throw err;
-          // Try multiple public proxies
-          for (const build of proxyBuilders) {
-            try {
-              const proxied = build(dest.href);
-              const res2 = await _origFetch(proxied, { cache: "no-store" });
-              if (res2.ok) return res2;
-            } catch (_) {}
-          }
-          throw err;
-        } catch (err2) {
-          throw err2;
-        }
-      }
-    };
-  } catch (_e) {}
-})();
- // --- End: resilient fetch wrapper ---
-
-
-
-
+    var dest = new URL(u, location.href);
+    // Only proxy cross-origin
+    if (dest.origin === location.origin) return dest.href;
+  } catch (_) {
+    return u;
+  }
+  if (window.CORS_PROXY_BASE) {
+    // If your Worker expects /fetch/<FULL_URL>, keep it as below:
+    return window.CORS_PROXY_BASE + encodeURIComponent(u);
+  }
+  // Fallback public proxies (best-effort)
+  return "https://cors.isomorphic-git.org/" + u;
+}
+// Ensure default fetch options where not provided
+function withFetchOpts(opts) {
+  opts = opts || {};
+  if (!('mode' in opts)) opts.mode = 'cors';
+  if (!('referrerPolicy' in opts)) opts.referrerPolicy = 'no-referrer';
+  if (!('cache' in opts)) opts.cache = 'no-store';
+  return opts;
+}
+// =========================================================
             }
             return deny();
          },
@@ -82,7 +59,7 @@ try {
    if (navigator.serviceWorker && navigator.serviceWorker.register) {
       const sw = navigator.serviceWorker;
       sw.register = function () {
-         // No-op to avoid third-party SW registration crashes on GH Pages
+         // No-op instead of throwing to avoid crashing on GH Pages
          return Promise.resolve(undefined);
       };
    }
@@ -309,20 +286,7 @@ function d() {
          )
          .then((response) => response.json())
          .then((data) => postFetchTasks(data, false))
-         .catch((error) => { 
-       try { 
-         console.error(error); 
-         if (typeof placeholder !== 'undefined' && placeholder) {
-            placeholder.innerHTML = '<div class="download-card mx-auto bg-white rounded-xl shadow-md p-4">'
-              + '<strong>Couldn\'t fetch the video info.</strong><br>'
-              + 'The provider blocked the request (CORS). Retried via proxy but still failed.'
-              + '</div>';
-         }
-         if (typeof loadButton !== 'undefined' && loadButton) {
-            loadButton.removeAttribute('disabled');
-         }
-       } catch (_e) {}
-    });
+         .catch((error) => console.error(error));
    } else if (isYouTube(link)) {
       fetch(
             "https://loader.to/ajax/playlist.php?format=" +
@@ -347,36 +311,10 @@ function d() {
                   )
                   .then((response) => response.json())
                   .then((data) => postFetchTasks(data, false))
-                  .catch((error) => { 
-       try { 
-         console.error(error); 
-         if (typeof placeholder !== 'undefined' && placeholder) {
-            placeholder.innerHTML = '<div class="download-card mx-auto bg-white rounded-xl shadow-md p-4">'
-              + '<strong>Couldn\'t fetch the video info.</strong><br>'
-              + 'The provider blocked the request (CORS). Retried via proxy but still failed.'
-              + '</div>';
-         }
-         if (typeof loadButton !== 'undefined' && loadButton) {
-            loadButton.removeAttribute('disabled');
-         }
-       } catch (_e) {}
-    });
+                  .catch((error) => console.error(error));
             }
          })
-         .catch((error) => { 
-       try { 
-         console.error(error); 
-         if (typeof placeholder !== 'undefined' && placeholder) {
-            placeholder.innerHTML = '<div class="download-card mx-auto bg-white rounded-xl shadow-md p-4">'
-              + '<strong>Couldn\'t fetch the video info.</strong><br>'
-              + 'The provider blocked the request (CORS). Retried via proxy but still failed.'
-              + '</div>';
-         }
-         if (typeof loadButton !== 'undefined' && loadButton) {
-            loadButton.removeAttribute('disabled');
-         }
-       } catch (_e) {}
-    });
+         .catch((error) => console.error(error));
    } else {
       fetch(
             "https://p.oceansaver.in/ajax/download.php?format=" +
@@ -388,20 +326,7 @@ function d() {
          )
          .then((response) => response.json())
          .then((data) => postFetchTasks(data, false))
-         .catch((error) => { 
-       try { 
-         console.error(error); 
-         if (typeof placeholder !== 'undefined' && placeholder) {
-            placeholder.innerHTML = '<div class="download-card mx-auto bg-white rounded-xl shadow-md p-4">'
-              + '<strong>Couldn\'t fetch the video info.</strong><br>'
-              + 'The provider blocked the request (CORS). Retried via proxy but still failed.'
-              + '</div>';
-         }
-         if (typeof loadButton !== 'undefined' && loadButton) {
-            loadButton.removeAttribute('disabled');
-         }
-       } catch (_e) {}
-    });
+         .catch((error) => console.error(error));
    }
 }
 
@@ -423,7 +348,9 @@ function createElementFromHTML(htmlString) {
 }
 
 function p(i) {
-   fetch("https://p.oceansaver.in/api/progress?id=" + i, {referrerPolicy: "no-referrer", mode: "cors", cache: "no-store"})
+   fetch("https://p.oceansaver.in/api/progress?id=" + i, {
+         cache: "no-store"
+      })
       .then((r) => r.json())
       .then((data) => {
          const pctNum = Math.max(0, Math.min(100, (data.progress || 0) / 10));
@@ -559,20 +486,7 @@ function loadNext(limit, id, url) {
       .then((data) => {
          document.getElementById(id).innerHTML += data.html;
       })
-      .catch((error) => { 
-       try { 
-         console.error(error); 
-         if (typeof placeholder !== 'undefined' && placeholder) {
-            placeholder.innerHTML = '<div class="download-card mx-auto bg-white rounded-xl shadow-md p-4">'
-              + '<strong>Couldn\'t fetch the video info.</strong><br>'
-              + 'The provider blocked the request (CORS). Retried via proxy but still failed.'
-              + '</div>';
-         }
-         if (typeof loadButton !== 'undefined' && loadButton) {
-            loadButton.removeAttribute('disabled');
-         }
-       } catch (_e) {}
-    });
+      .catch((error) => console.error(error));
 }
 
 function parseYtId(s) {
