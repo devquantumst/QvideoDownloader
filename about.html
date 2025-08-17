@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>About • Qvideo Downloader</title>
+        
+        <link rel="canonical" href="https://QvideoDownloder/">
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+        <meta name="theme-color" content="#240f54">
+        <link rel="icon" type="image/png" href="assets/img/Qvideo_logo.png">
+        <link rel="apple-touch-icon" href="assets/img/Qvideo_logo.png">
+    
+        <link rel="icon" type="image/x-icon" href="assets/img/Qvideo.ico" />
+		<meta name="description" content="About Qvideo Downloader: what it is, how it works, and our principles." />
+        <link rel="manifest" href="manifest.json">
+		<link rel="stylesheet" href="assets/css/style.min.css" />
+        <style>
+            .link {
+                text-decoration: none;
+                color: #6a64cc;
+                font-weight: bold;
+            }
+        </style>
+	</head>
+	<body>
+		<a class="visually-hidden" href="#main">Skip to main content</a>
+
+		<header>
+			<div class="container nav" role="navigation" aria-label="Primary">
+				<a class="brand" href="#" aria-label="Homepage">
+					<img class="logo" src="assets/img/Qvideo_logo.png" width="32" height="32" alt="" />
+					<span>Qvideo Downloader</span>
+				</a>
+
+				<nav class="links" aria-label="Site">
+					<a href="index.html">Home</a>
+					<a href="#main" aria-current="page">About</a>
+                    <a href="faq.html" aria-current="page">FAQ</a>
+                    <a href="contact.html">Contact</a>
+					<a class="nav-cta" href="https://ko-fi.com/devquantumstudio" target="_blank" rel="noopener noreferrer">Donate</a>
+				</nav>
+
+				<button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Toggle menu">
+					<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+						<path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+					</svg>
+				</button>
+			</div>
+		</header>
+
+		<main id="main" class="container">
+			<section class="hero card">
+				<h1>About This Project</h1>
+				<p>
+					<small>Last updated: <time id="lastUpdated"></time></small>
+				</p>
+				<p>
+					<strong>Qvideo Downloader</strong> is a small, free tool that helps you fetch a downloadable link from a video or playlist URL. It’s built to be <em>fast</em>, <em>simple</em>, and <em>clean</em>—no accounts, no ads, and
+					no cookies.
+				</p>
+			</section>
+
+			<section class="card" style="margin-inline: auto; margin-top: 30px; padding-left: 30px; padding-right: 30px;">
+				<h2>What We Believe</h2>
+				<ul>
+					<li><strong>Free &amp; non-monetized:</strong> You can use the site without paying. Donations are optional and never required.</li>
+					<li><strong>Privacy first:</strong> We don’t use cookies (including third-party cookies), trackers, analytics beacons, or push notifications.</li>
+					<li><strong>Minimal footprint:</strong> Lightweight front-end, no pop-ups, no clutter.</li>
+				</ul>
+
+				<h2>How It Works</h2>
+				<ol>
+					<li>Paste a full video or playlist URL in the box on the Home page.</li>
+					<li>Pick a format or quality.</li>
+					<li>Click <strong>Download</strong>. Your links appear under the button. When the button unlocks, click to save.</li>
+				</ol>
+				<p><em>Tip:</em> Larger videos can take a moment to prepare; keep the tab open until the link is ready.</p>
+
+				<h2>What We Don’t Do</h2>
+				<ul>
+					<li>No ads, no third-party cookies, no tracking.</li>
+					<li>No user accounts and no personal data collection.</li>
+					<li>No selling, renting, or sharing of user data—ever.</li>
+				</ul>
+
+				<h2>Respectful &amp; Lawful Use</h2>
+				<p>Use this tool only for content you own or are legally permitted to download. You are solely responsible for how you use it and for complying with the laws and platform terms that apply to you.</p>
+				<p>
+					<strong>Prohibited:</strong> illegal use, rights infringement, harmful activity, and downloading or distributing pornographic/obscene or exploitative content. We do not endorse such use and expressly disown it—now and in
+					the future.
+				</p>
+
+				<h2>Donations</h2>
+				<p>
+					This is a community project provided free of charge. If the tool helps you, you’re welcome to support it with an optional donation via our
+					<a class="link" href="https://ko-fi.com/devquantumstudio" target="_blank" rel="noopener noreferrer">donation page</a>. Donations are voluntary gifts, not payments for a service.
+				</p>
+
+				<h2>Hosting &amp; Tech</h2>
+				<ul>
+					<li>Hosted on GitHub Pages for simplicity and availability.</li>
+					<li>No service workers, no push notifications, no third-party ads.</li>
+					<li>Built to be lightweight and responsive across modern browsers.</li>
+				</ul>
+
+				<h2>Contact</h2>
+				<p>Questions or feedback? Contact us <a class="link" href="contact.html">here</a>.</p>
+
+				<p class="mt-4">
+					<small>For legal details, please read our <a class="link" href="/terms.html">Terms &amp; Conditions</a> and <a class="link" href="/privacy.html">Privacy Policy</a>.</small>
+				</p>
+			</section>
+		</main>
+
+		<footer>
+			<div class="container foot">
+				<small>© <span id="year"></span> DevQuantum Studio. All rights reserved.</small>
+				<div class="foot-links">
+					<a id="privacy" href="privacy.html">Privacy Policy</a>
+					<a id="terms" href="terms.html">Terms &amp; Conditions</a>
+				</div>
+			</div>
+		</footer>
+
+		<script>
+			const btn = document.getElementById('menuBtn');
+			btn?.addEventListener('click', () => {
+			  const open = document.body.classList.toggle('nav-open');
+			  btn.setAttribute('aria-expanded', String(open));
+			});
+			window.addEventListener('keydown', (e) => {
+			  if (e.key === 'Escape') {
+			    document.body.classList.remove('nav-open');
+			    btn?.setAttribute('aria-expanded', 'false');
+			  }
+			});
+			document.getElementById('year').textContent = new Date().getFullYear();
+			document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString(undefined, {
+			  year: 'numeric', month: 'long', day: 'numeric'
+			});
+		</script>
+	</body>
+</html>

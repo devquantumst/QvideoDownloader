@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Qvideo Downloader</title>
+        
+        <link rel="canonical" href="https://QvideoDownloder/">
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+        <meta name="theme-color" content="#240f54">
+        <link rel="icon" type="image/png" href="assets/img/Qvideo_logo.png">
+        <link rel="apple-touch-icon" href="assets/img/Qvideo_logo.png">
+
+		<link rel="icon" type="image/x-icon" href="assets/img/Qvideo.ico" />
+		<meta name="description" content="Lightweight video downloader." />
+        <link rel="manifest" href="manifest.json">
+		<link rel="stylesheet" href="assets/css/style.min.css" />
+	</head>
+	<body>
+		<a class="visually-hidden" href="#main">Skip to main content</a>
+
+		<header>
+			<div class="container nav" role="navigation" aria-label="Primary">
+				<a class="brand" href="#" aria-label="Homepage">
+					<img class="logo" src="assets/img/Qvideo_logo.png" width="32" height="32" alt="" />
+					<span>Qvideo Downloader</span>
+				</a>
+
+				<nav class="links" aria-label="Site">
+					<a href="#main">Home</a>
+					<a href="about.html">About</a>
+                    <a href="faq.html" aria-current="page">FAQ</a>
+					<a href="contact.html">Contact</a>
+					<a class="nav-cta" href="https://ko-fi.com/devquantumstudio" target="_blank" rel="noopener noreferrer">Donate</a>
+				</nav>
+
+				<button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Toggle menu">
+					<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+						<path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+					</svg>
+				</button>
+			</div>
+		</header>
+
+		<main id="main" class="container">
+			<section class="hero card" id="features">
+				<h1>Fast, Free Video Online Downloader</h1>
+				<p>No ads, no clutter — just download.</p>
+			</section>
+
+			<section class="panel-grid">
+				<div class="embed card" aria-label="Download panel">
+					<h2 class="visually-hidden">Downloader</h2>
+
+					<div class="dl-form">
+						<div class="field">
+							<label for="link">URL</label>
+							<input type="url" id="link" placeholder="Paste video or playlist URL" oninput="checkURL();" />
+						</div>
+
+						<div class="field">
+							<label for="format">Format</label>
+							<select id="format">
+								<optgroup label="Audio">
+									<option value="mp3">MP3</option>
+									<option value="m4a">M4A</option>
+									<option value="webm">WEBM</option>
+									<option value="aac">AAC</option>
+									<option value="flac">FLAC</option>
+									<option value="opus">OPUS</option>
+									<option value="ogg">OGG</option>
+									<option value="wav">WAV</option>
+								</optgroup>
+								<optgroup label="Video">
+									<option value="144">MP4 (144p)</option>
+									<option value="240">MP4 (240p)</option>
+									<option value="360">MP4 (360p)</option>
+									<option value="480">MP4 (480p)</option>
+									<option value="720">MP4 (720p)</option>
+									<option value="1080">MP4 (1080p)</option>
+									<option value="1440">MP4 (1440p)</option>
+									<option value="4k">MP4 (4K)</option>
+								</optgroup>
+							</select>
+						</div>
+
+						<button class="btn-primary" id="load" onclick="d();">Download</button>
+
+						<div id="ds"></div>
+					</div>
+				</div>
+
+				<aside class="tips card">
+					<h2>Tips</h2>
+					<ul>
+						<li><span class="bullet">1</span><span>Paste a full video or playlist URL. Most platforms are supported.</span></li>
+						<li>
+							<span class="bullet">2</span><span>Choose the format/quality you need, then hit <strong>Download</strong>.</span>
+						</li>
+						<li><span class="bullet">3</span><span>Your results appear below the button. Multiple results will stack there if you add more.</span></li>
+						<li><span class="bullet">4</span><span>Watch the progress bar there, then click to download.</span></li>
+					</ul>
+				</aside>
+			</section>
+		</main>
+
+		<footer>
+			<div class="container foot">
+				<small>© <span id="year"></span> DevQuantum Studio. All rights reserved.</small>
+				<div class="foot-links">
+					<a id="privacy" href="privacy.html">Privacy Policy</a>
+					<a id="terms" href="terms.html">Terms &amp; Conditions</a>
+				</div>
+			</div>
+		</footer>
+
+		<script src="/assets/js/script.js" defer></script>
+
+        <script>
+            if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("./sw.js").catch(console.error);
+            });
+            }
+        </script>
+		<script>
+			(function () {
+			  const root = document.getElementById('ds');
+			  if (!root) return;
+
+			  function stripOnclick(scope) {
+			    scope.querySelectorAll('a[onclick]').forEach(a => {
+			      a.removeAttribute('onclick');
+			      a.onclick = null;
+			    });
+			  }
+			  stripOnclick(root);
+
+			  const mo = new MutationObserver((mutations) => {
+			    for (const m of mutations) {
+			      if (m.type === 'attributes' && m.attributeName === 'onclick' && m.target.tagName === 'A') {
+			        m.target.removeAttribute('onclick');
+			        m.target.onclick = null;
+			      }
+			      m.addedNodes.forEach(node => {
+			        if (node.nodeType === 1) {
+			          if (node.matches?.('a[onclick]')) { node.removeAttribute('onclick'); node.onclick = null; }
+			          if (node.querySelectorAll) stripOnclick(node);
+			        }
+			      });
+			    }
+			  });
+			  mo.observe(root, { subtree: true, childList: true, attributes: true, attributeFilter: ['onclick'] });
+
+			  // Year in footer
+			  document.getElementById('year').textContent = new Date().getFullYear();
+			})();
+		</script>
+
+		<!-- Mobile nav toggle -->
+		<script>
+			const btn = document.getElementById('menuBtn');
+			btn?.addEventListener('click', () => {
+			  const open = document.body.classList.toggle('nav-open');
+			  btn.setAttribute('aria-expanded', String(open));
+			});
+			window.addEventListener('keydown', (e) => {
+			  if (e.key === 'Escape') {
+			    document.body.classList.remove('nav-open');
+			    btn?.setAttribute('aria-expanded', 'false');
+			  }
+			});
+		</script>
+	</body>
+</html>

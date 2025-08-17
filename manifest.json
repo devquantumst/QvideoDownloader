@@ -1,0 +1,78 @@
+{
+  "id": "./",
+  "name": "Qvideo Downloader",
+  "short_name": "Qvideo",
+  "description": "Fast, free online video & audio downloader. No ads, no clutter — just download.",
+  "lang": "en",
+  "dir": "ltr",
+
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone"],
+  "orientation": "portrait",
+
+  "theme_color": "#0ea5e9",
+  "background_color": "#ffffff",
+  "categories": ["utilities", "video", "productivity"],
+
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "New download",
+      "short_name": "Download",
+      "description": "Jump straight to the downloader",
+      "url": "./#main",
+      "icons": [{ "src": "assets/icons/shortcut-dl.png", "sizes": "96x96", "type": "image/png" }]
+    },
+    {
+      "name": "About",
+      "short_name": "About",
+      "url": "./about.html",
+      "icons": [{ "src": "assets/icons/shortcut-about.png", "sizes": "96x96", "type": "image/png" }]
+    },
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "url": "./contact.html",
+      "icons": [{ "src": "assets/icons/shortcut-contact.png", "sizes": "96x96", "type": "image/png" }]
+    }
+  ],
+
+  "screenshots": [
+    {
+      "src": "assets/screenshots/home-portrait.png",
+      "type": "image/png",
+      "sizes": "1080x2340",
+      "label": "Home screen"
+    }
+  ],
+
+  "prefer_related_applications": false
+}
