@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://QvideoDownloder/sitemap.xml
+Sitemap: https://devquantumst.github.io/QvideoDownloader/sitemap.xml
