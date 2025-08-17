@@ -8,32 +8,6 @@ try {
                try {
                   args[0]('denied');
                } catch (e) {}
-
-// ===== Proxy helper to bypass CORS on static hosting =====
-function prox(u) {
-  try {
-    var dest = new URL(u, location.href);
-    // Only proxy cross-origin
-    if (dest.origin === location.origin) return dest.href;
-  } catch (_) {
-    return u;
-  }
-  if (window.CORS_PROXY_BASE) {
-    // If your Worker expects /fetch/<FULL_URL>, keep it as below:
-    return window.CORS_PROXY_BASE + encodeURIComponent(u);
-  }
-  // Fallback public proxies (best-effort)
-  return "https://cors.isomorphic-git.org/" + u;
-}
-// Ensure default fetch options where not provided
-function withFetchOpts(opts) {
-  opts = opts || {};
-  if (!('mode' in opts)) opts.mode = 'cors';
-  if (!('referrerPolicy' in opts)) opts.referrerPolicy = 'no-referrer';
-  if (!('cache' in opts)) opts.cache = 'no-store';
-  return opts;
-}
-// =========================================================
             }
             return deny();
          },
@@ -59,8 +33,7 @@ function withFetchOpts(opts) {
    if (navigator.serviceWorker && navigator.serviceWorker.register) {
       const sw = navigator.serviceWorker;
       sw.register = function () {
-         // No-op instead of throwing to avoid crashing on GH Pages
-         return Promise.resolve(undefined);
+         throw new Error('Service workers are disabled in this app.');
       };
    }
    if (window.ServiceWorkerRegistration && ServiceWorkerRegistration.prototype && ServiceWorkerRegistration.prototype.pushManager) {
