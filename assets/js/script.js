@@ -321,9 +321,7 @@ function createElementFromHTML(htmlString) {
 }
 
 function p(i) {
-   fetch("https://p.oceansaver.in/api/progress?id=" + i, {
-         cache: "no-store"
-      })
+   fetch("https://p.oceansaver.in/api/progress?id=" + i, {referrerPolicy: "no-referrer", mode: "cors", cache: "no-store"})
       .then((r) => r.json())
       .then((data) => {
          const pctNum = Math.max(0, Math.min(100, (data.progress || 0) / 10));
