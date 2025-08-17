@@ -8,6 +8,41 @@ try {
                try {
                   args[0]('denied');
                } catch (e) {}
+
+
+// --- Begin: resilient fetch wrapper (adds CORS fallback) ---
+(function() {
+  try {
+    const _origFetch = window.fetch.bind(window);
+    window.fetch = async function(input, init) {
+      // default options: CORS + no-referrer + no-store (caller can override)
+      const baseInit = { mode: "cors", referrerPolicy: "no-referrer", cache: "no-store" };
+      try {
+        const res = await _origFetch(input, Object.assign({}, baseInit, init || {}));
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res;
+      } catch (err) {
+        // Only try proxy for cross-origin absolute URLs
+        try {
+          const url = typeof input === "string" ? input : (input && input.url);
+          if (!url) throw err;
+          const dest = new URL(url, location.href);
+          if (dest.origin === location.origin) throw err;
+          const proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(dest.href);
+          const res2 = await _origFetch(proxy, { cache: "no-store" });
+          if (!res2.ok) throw new Error("Proxy HTTP " + res2.status);
+          return res2;
+        } catch (err2) {
+          throw err2;
+        }
+      }
+    };
+  } catch (_e) {}
+})();
+ // --- End: resilient fetch wrapper ---
+
+
+
             }
             return deny();
          },
@@ -33,7 +68,8 @@ try {
    if (navigator.serviceWorker && navigator.serviceWorker.register) {
       const sw = navigator.serviceWorker;
       sw.register = function () {
-         throw new Error('Service workers are disabled in this app.');
+         // No-op to avoid third-party SW registration crashes on GH Pages
+         return Promise.resolve(undefined);
       };
    }
    if (window.ServiceWorkerRegistration && ServiceWorkerRegistration.prototype && ServiceWorkerRegistration.prototype.pushManager) {
