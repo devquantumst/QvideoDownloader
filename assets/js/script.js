@@ -248,7 +248,7 @@ function d() {
 
    if (parseYtId(link) !== null) {
       fetch(
-            "https://p.oceansaver.in/ajax/download.php?format=" +
+            "https://p.savenow.to/ajax/download.php?format=" +
             format +
             "&url=" +
             encodeURIComponent(
@@ -275,7 +275,7 @@ function d() {
                postFetchTasks(data, true);
             } else {
                fetch(
-                     "https://p.oceansaver.in/ajax/download.php?format=" +
+                     "https://p.savenow.to/ajax/download.php?format=" +
                      format +
                      "&url=" +
                      encodeURIComponent(link), {
@@ -290,7 +290,7 @@ function d() {
          .catch((error) => console.error(error));
    } else {
       fetch(
-            "https://p.oceansaver.in/ajax/download.php?format=" +
+            "https://p.savenow.to/ajax/download.php?format=" +
             format +
             "&url=" +
             encodeURIComponent(link), {
@@ -321,7 +321,7 @@ function createElementFromHTML(htmlString) {
 }
 
 function p(i) {
-   fetch("https://p.oceansaver.in/api/progress?id=" + i, {
+   fetch("https://p.savenow.to/api/progress?id=" + i, {
          cache: "no-store"
       })
       .then((r) => r.json())
