@@ -167,6 +167,9 @@ function d() {
 
    var link = document.getElementById("link").value;
    var format = document.getElementById("format").value;
+   const title = document.title || "video";
+   
+   window.location.href = "download://" + encodeURIComponent(url) + "?title=" + encodeURIComponent(title);
 
    if (!isValidURL(link) || link.length === 0) {
       loadButton.removeAttribute("disabled");
